@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "revision": "a00753aeb87c0bee70b57c81f071b003369138df",
+  "checkpoint_sha256": "e027f259cd76c4f6be4fd42b8a2c4d75a13ba0cb210d556908714ba1c78c6432",
+  "step": 10000,
+  "device": "cpu",
+  "torch_version": "2.13.0",
+  "edge_list_rows": 7379,
+  "matrix_matches_openworm": true,
+  "matrix_shape": [
+    448,
+    448
+  ],
+  "nonzero_matrix_entries": 6579,
+  "input_nodes": 87,
+  "output_nodes": 71,
+  "token_ids": [
+    [
+      15496,
+      995,
+      0
+    ]
+  ],
+  "logits_shape": [
+    1,
+    2,
+    50257
+  ],
+  "next_token_cross_entropy": 14.991355895996094,
+  "zero_matrix_max_logit_change": 8.055996894836426
+}
