@@ -47,7 +47,7 @@ def wiring(path):
 
 
 @torch.inference_mode()
-def integrate(ids, chemical, electrical, device):
+def integrate(ids, chemical, electrical, device, *, record_all=False):
     # One column per condition, with paired parameters and a common stimulus.
     conditions = [(gain, release) for gain in GAINS for release in RELEASE]
     gain, release = torch.tensor(conditions, device=device).T
@@ -60,7 +60,7 @@ def integrate(ids, chemical, electrical, device):
     drive = torch.zeros_like(state)
     drive[ash] = 1
     gap_degree = e.sum(dim=1, keepdim=True)
-    trace = [state[aib].mean(dim=0)]
+    trace = [state if record_all else state[aib].mean(dim=0)]
     for step in range(180):
         chemical_input = c @ (source_scale * state)
         gap_input = e @ state - gap_degree * state
@@ -68,7 +68,7 @@ def integrate(ids, chemical, electrical, device):
         state = state + DT * (
             -state + torch.tanh(stimulus + gain * (chemical_input + gap_input))
         )
-        trace.append(state[aib].mean(dim=0))
+        trace.append(state if record_all else state[aib].mean(dim=0))
     return torch.stack(trace).cpu()
 
 

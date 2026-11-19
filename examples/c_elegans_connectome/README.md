@@ -36,3 +36,9 @@ Run from this directory using the cached edge list from the smoke test. CUDA or 
 uv run --no-project --python 3.13 --with torch==2.13.0 --with ../.. python eat4_simulation.py "$worm_cache/edges.csv" eat4_result.json
 uv run --no-project --python 3.13 --with matplotlib python plot_eat4.py
 ```
+
+### Interactive viewer
+
+Open `viewer.html` in a browser from the checkout. Keep `viewer_data.js` beside it. Press Play or drag the time slider to replay GPU node activity. Switch to Full connectome to inspect all 448 cells and their anatomical connections. The wiring stays fixed across release conditions. Node colors show simulated activity on a shared logarithmic scale, and the chart uses the original bilateral AIB values. The circuit view shows only direct connections among the four displayed neurons.
+
+To regenerate the display data with PyTorch, NumPy and NetworkX 3.5 or later installed, run `python build_viewer_data.py "$worm_cache/edges.csv"` in the NeuroWorkflow environment. It checks the bilateral readout against the recorded result before writing.
