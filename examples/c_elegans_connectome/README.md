@@ -19,3 +19,20 @@ uv run --no-project --python 3.13 --with torch==2.13.0 --with numpy==2.4.6 --wit
 ```
 
 The script verifies the SHA-256 of each input and prints JSON after all checks pass. The recorded run is in [result.json](result.json).
+
+## GPU simulation of reduced ASH chemical release
+
+This example uses the 448-node OpenWorm anatomy in a recurrent activity model. It drives ASHL and ASHR equally from time 2 to 6 and records the mean of AIBL and AIBR. Figure 6g of the cooling study reports a reduced AIB calcium response in whole-animal *eat-4* mutants and tests rescue of *eat-4* in ASH. The simulation uses an idealized input pulse and a cell-specific release perturbation. [Primary experiment](https://doi.org/10.1038/s41467-023-44638-5)
+
+For each target, the model divides incoming anatomical weights by its total incoming weight before applying any perturbation. Chemical connections transmit positive activity, electrical connections couple activity differences using symmetrized weights, and each node has a unit leak. The update uses forward Euler with a 0.1 step and a saturating tanh on the summed input. The node scales all chemical output from ASH to 100%, 50%, or 0% as a proxy for retained glutamate release. All electrical coupling and other chemical connections remain active. The simulation does not model transmitter-specific receptors, cotransmission, gene expression, developmental compensation, or calcium fluorescence. The previous language-model checkpoint is independent of this simulation.
+
+At gain 0.8, peak bilateral AIB activity was 0.03689, 0.02023 and 0.00385 model units at 100%, 50% and 0% release. The response decreased at gains 0.4 and 1.2 as well. Because ASH has positive modeled chemical connections to AIB, attenuating these connections favors a decrease by construction. The percentages are conditional model effects. A quantitative comparison with the cooling experiment would require calibrated dynamics and matched stimuli.
+
+![AIB activity during and after a bilateral ASH stimulus](eat4_response.png)
+
+Run from this directory using the cached edge list from the smoke test. CUDA or Apple Metal is required. A CPU reference checks every saved AIB time point for all nine configurations. The JSON contains all traces, the software version and the numerical discrepancy.
+
+```sh
+uv run --no-project --python 3.13 --with torch==2.13.0 --with ../.. python eat4_simulation.py "$worm_cache/edges.csv" eat4_result.json
+uv run --no-project --python 3.13 --with matplotlib python plot_eat4.py
+```
